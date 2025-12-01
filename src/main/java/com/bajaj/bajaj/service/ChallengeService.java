@@ -79,6 +79,9 @@ public class ChallengeService {
 
     private GenerateWebhookResponse callGenerateWebhook() {
         try {
+            log.info("Calling generateWebhook with payload: name={}, regNo={}, email={}",
+                    properties.getName(), properties.getRegNo(), properties.getEmail());
+
             GenerateWebhookRequest requestBody = new GenerateWebhookRequest(
                     properties.getName(),
                     properties.getRegNo(),
@@ -122,10 +125,11 @@ public class ChallengeService {
         }
 
         String digitsOnly = regNo.replaceAll("\\D+", "");
-        if (digitsOnly.length() < 2) {
-            // if there is only one digit, use that
+        if (digitsOnly.length() < 2 && !digitsOnly.isEmpty()) {
             int value = Integer.parseInt(digitsOnly);
             return (value % 2 == 0) ? 2 : 1;
+        } else if (digitsOnly.isEmpty()) {
+            return 1;
         }
 
         String lastTwoStr = digitsOnly.substring(digitsOnly.length() - 2);
@@ -147,7 +151,6 @@ public class ChallengeService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             // JWT in Authorization header.
-            // If backend expects only the token, remove "Bearer ".
             headers.setBearerAuth(accessToken);
 
             SubmitSolutionRequest body = new SubmitSolutionRequest(finalQuery);

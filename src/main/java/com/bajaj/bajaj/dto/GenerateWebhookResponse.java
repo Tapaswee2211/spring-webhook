@@ -1,4 +1,4 @@
-  package com.bajaj.bajaj.dto;
+package com.bajaj.bajaj.dto;
 
 public class GenerateWebhookResponse {
 
